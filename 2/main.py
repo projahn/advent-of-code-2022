@@ -1,47 +1,41 @@
 def main():
     # rock, paper, scissor
-    # hand options:
-    # myself -> (x,y,z) | opponent -> (a,b,c)
-    rules = {
-        'X': {'defeat': 'B', 'win': 'C', 'draw': 'A', 'point': 1},  # my hand is rock
-        'Y': {'defeat': 'C', 'win': 'A', 'draw': 'B', 'point': 2},  # my hand is paper
-        'Z': {'defeat': 'A', 'win': 'B', 'draw': 'C', 'point': 3},  # my hand is scissor
-        'A': {'defeat': 'Y', 'win': 'Z', 'draw': 'X', 'point': 1},  # my hand is rock
-        'B': {'defeat': 'Z', 'win': 'X', 'draw': 'Y', 'point': 2},  # my hand is paper
-        'C': {'defeat': 'X', 'win': 'Y', 'draw': 'Z', 'point': 3}  # my hand is scissor
-    }
+    # points for round combinations
+    # ------------------------------------
+    # A vs X = DRAW  = (1+3) = 4
+    # A vs Y = WIN   = (2+6) = 8
+    # A vs Z = LOSS  = (3+0) = 3
+    # B vs X = LOSS  = (1+0) = 1
+    # B vs Y = DRAW  = (2+3) = 5
+    # B vs Z = WIN   = (3+6) = 9
+    # C vs X = WIN   = (1+6) = 7
+    # C vs Y = LOSS  = (2+0) = 2
+    # C vs Z = DRAW  = (3+3) = 6
+
     data = open('input.txt').read().split("\n")
 
-    opponent_hand, my_hand, part1_pts, part2_pts = '', '', 0, 0
+    total_points_pt1, total_points_pt2 = 0, 0
 
-    for hands in data:
-        opponent_hand = hands.split(' ')[0]
-        my_hand = hands.split(' ')[1]
+    outcomes = {
+        "A X":4, "A Y":8, "A Z":3,
+        "B X":1, "B Y":5, "B Z":9,
+        "C X":7, "C Y":2, "C Z":6
+    }
 
-        my_round_options = rules.get(my_hand)
-        oppenent_round_options = rules.get(opponent_hand)
+    for round in data:
+        total_points_pt1 += outcomes.get(round)
 
-        # part 1
-        # wins = 6pts, draw = 3pts, lost = 0pts. Hand point is always received.
-        if opponent_hand == my_round_options.get('win'):
-            part1_pts += (my_round_options.get('point') + 6)  # win gives 6 pts
-        elif opponent_hand == my_round_options.get('draw'):
-            part1_pts += (my_round_options.get('point') + 3)  # draw gives 3 pts
-        elif opponent_hand == my_round_options.get('defeat'):
-            part1_pts += my_round_options.get('point')
+    desired_outcomes = {
+        "A X":3, "A Y":4, "A Z":8,
+        "B X":1, "B Y":5, "B Z":9,
+        "C X":2, "C Y":6, "C Z":7
+    }
 
-        # part 2
-        # Z = win, Y = draw, X = defeat
-        if my_hand == 'Z':
-            point = rules.get(rules.get(opponent_hand).get('defeat')).get('point')
-            part2_pts += (point + 6)
-        elif my_hand == 'Y':
-            part2_pts += (rules.get(opponent_hand).get('point') + 3)
-        elif my_hand == 'X':
-            point = rules.get(rules.get(opponent_hand).get('win')).get('point')
-            part2_pts += point
-    print("Answer to part 1: " + str(part1_pts))
-    print("Answer to part 2: " + str(part2_pts))
+    for round in data:
+        total_points_pt2 += desired_outcomes.get(round)
+
+    print("Answer to part 1: " + str(total_points_pt1))
+    print("Answer to part 2: " + str(total_points_pt2))
 
 
 if __name__ == "__main__":
